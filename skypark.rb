@@ -14,5 +14,13 @@ post '/report' do
   plate_reader = PlateReader.new
   report = ParkingReport.new(parking_records, plate_reader)
   report_data = report.call.sort {|a,b| a[0].downcase <=> b[0].downcase}
-  erb :report, layout: :layout, locals: {:report_data => report_data, :license_plates => plate_reader.call, :unknown => ParkingReport::UNKNOWN}
-end
+  locals = {
+    :report_data => report_data,
+    :license_plates => plate_reader.call,
+    :unknown => ParkingReport::UNKNOWN,
+    :users => report.users.size,
+    :cars => report.cars.size,
+    :unknown_cars => report.unknown_cars.size,
+    :total => report.total,
+  }
+  erb :report, layout: :layout, locals: locals end

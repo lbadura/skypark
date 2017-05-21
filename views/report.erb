@@ -1,10 +1,10 @@
 <div class="row gutters auto">
-    <div class="col">Users: <span></span></div>
-    <div class="col">Cars: <span></span></div>
-    <div class="col">Unknown: <span></span></div>
-    <div class="col">Timeframe:</div>
-    <div class="col">Total: <span></span></div>
+  <div class="col"><span class="focus tag">Users </span> <span class="label focus outline"><%= users %></span></div>
+  <div class="col"><span class="tag focus">Cars </span><span class="label focus outline"><%= cars %></span></div>
+    <div class="col"><span class="tag error">Unknown <span class="label error outline"><%= unknown_cars %></span></div>
+    <div class="col"><span class="tag black">Total</span> <span class="label strong black">PLN <%= total %></span></div>
 </div>
+
 <table id="report" class="boarded">
   <thead>
     <th class="w15">Name</th>

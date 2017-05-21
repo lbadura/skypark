@@ -5,9 +5,11 @@ class ParkingReport
   def initialize(parking_records, plate_reader)
     @parking_records = parking_records
     @plate_reader = plate_reader
+    @data = nil
   end
 
   def call
+    rerurn @data if @data
     res = {}
     @parking_records.each do |pr|
       owner = @plate_reader.owner(pr.plate)
@@ -20,6 +22,24 @@ class ParkingReport
       res[owner_name][pr.plate] << pr.amount
       res[owner_name]["total"] += pr.amount
     end
-    res
+    @data = res
+  end
+
+  def total
+    @data.map {|_,v| v["total"]}.sum.round(2)
+  end
+
+  def users
+    @data.map {|k,_| k}
+  end
+
+  def cars
+    @data.map {|_, plate| plate.keys.reject {|k| k == "total"}}.flatten.uniq
+  end
+
+  def unknown_cars
+    @data.select {|owner, _| owner == UNKNOWN }.map do |_, plate|
+      plate.keys.reject {|k| k == "total"}
+    end.flatten.uniq
   end
 end
