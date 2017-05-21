@@ -1,0 +1,27 @@
+<div class="row gutters auto">
+    <div class="col">Users: <span></span></div>
+    <div class="col">Cars: <span></span></div>
+    <div class="col">Unknown: <span></span></div>
+    <div class="col">Timeframe:</div>
+    <div class="col">Total: <span></span></div>
+</div>
+<table id="report" class="boarded">
+  <thead>
+    <th class="w15">Name</th>
+    <th class="w75">Parking records</th>
+    <th class="w10">User spent</th>
+  </thead>
+  <tbody>
+    <% report_data.each do |name, pd| %>
+      <tr class="<%= name == unknown ? "unknown" : "" %>">
+        <td><%= name %></td>
+        <td>
+          <% pd.reject {|k,_| k == "total"}.each do |plate, records| %>
+            <span class="label success small"><%= plate %></span> <span class="tag success small"><%= records.sum.round(2) %></span>
+          <% end %>
+        </td>
+        <td><span class="strong small">PLN <%= pd["total"].round(2) %></span></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

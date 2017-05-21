@@ -1,3 +1,12 @@
 body {
   padding: 10px;
 }
+
+ul.report {
+  margin: 0;
+  list-style-type: none;
+}
+
+tr.unknown td {
+  background-color: #f9dfdb;
+}
