@@ -1,0 +1,7 @@
+source 'https://rubygems.org'
+gem 'sinatra', '~> 2.0.0'
+gem 'google_drive'
+gem 'dotenv'
+gem 'pry'
+gem 'minitest'
+gem 'mocha'
