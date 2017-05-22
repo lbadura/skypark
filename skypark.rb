@@ -2,6 +2,8 @@ require 'sinatra'
 require_relative 'lib/skypark'
 
 set :public_folder, File.dirname(__FILE__) + '/assets'
+set :threaded, true
+set :server, :puma
 
 get '/' do
   license_plates = PlateReader.new.call
