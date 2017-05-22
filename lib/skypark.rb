@@ -1,6 +1,6 @@
 require 'pry'
 require 'csv'
-require 'Dotenv'
+require 'dotenv'
 require_relative 'plate_reader'
 require_relative 'parking_record'
 require_relative 'parking_report_parser'
