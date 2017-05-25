@@ -55,6 +55,16 @@ class ParkingReportTest < Minitest::Test
   end
 
   def test_total
-    assert_equal(@report.total, 42.59)
+    assert_equal(@report.total, 47.19)
+  end
+
+  def test_csv
+    csv_data = CSV.parse(@report.to_csv, headers: true)
+    assert_equal(csv_data[0]["Name"], "John")
+    assert_equal(csv_data[0]["Amount"], (ParkingReport::INITIAL_FEE + 12.1 + 7.9).to_s)
+    assert_equal(csv_data[1]["Name"], ParkingReport::UNKNOWN.to_s)
+    assert_equal(csv_data[1]["Amount"], (ParkingReport::INITIAL_FEE + 0.59).to_s)
+    assert_equal(csv_data[2]["Name"], "Ian")
+    assert_equal(csv_data[2]["Amount"], ((ParkingReport::INITIAL_FEE * 2) + 1 + 1).to_s)
   end
 end

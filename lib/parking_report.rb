@@ -1,5 +1,7 @@
+require 'csv'
+
 class ParkingReport
-  INITIAL_FEE = 5.0
+  INITIAL_FEE = 6.15
   UNKNOWN = 'unknown'
 
   def initialize(parking_records, plate_reader)
@@ -9,7 +11,7 @@ class ParkingReport
   end
 
   def call
-    rerurn @data if @data
+    return @data if @data
     res = {}
     @parking_records.each do |pr|
       owner = @plate_reader.owner(pr.plate)
@@ -23,6 +25,16 @@ class ParkingReport
       res[owner_name]["total"] += pr.amount
     end
     @data = res
+  end
+
+  def to_csv
+    data = call
+    CSV.generate(col_sep: ",", row_sep: "\n") do |csv|
+      csv << ["Name", "Amount"]
+      data.each do |record|
+        csv << [record[0], record[1]["total"]]
+      end
+    end
   end
 
   def total
