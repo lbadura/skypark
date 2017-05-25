@@ -24,5 +24,7 @@ post '/report' do
     :cars => report.cars.size,
     :unknown_cars => report.unknown_cars.size,
     :total => report.total,
+    :csv_data => report.to_csv,
   }
-  erb :report, layout: :layout, locals: locals end
+  erb :report, layout: :layout, locals: locals
+end

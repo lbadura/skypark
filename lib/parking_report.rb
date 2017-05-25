@@ -32,7 +32,7 @@ class ParkingReport
     CSV.generate(col_sep: ",", row_sep: "\n") do |csv|
       csv << ["Name", "Amount"]
       data.each do |record|
-        csv << [record[0], record[1]["total"]]
+        csv << [record[0], record[1]["total"].round(2)]
       end
     end
   end

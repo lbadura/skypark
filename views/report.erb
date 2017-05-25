@@ -3,7 +3,9 @@
   <div class="col"><span class="tag focus">Cars </span><span class="label focus outline"><%= cars %></span></div>
     <div class="col"><span class="tag error">Unknown <span class="label error outline"><%= unknown_cars %></span></div>
     <div class="col"><span class="tag black">Total</span> <span class="label strong black">PLN <%= total %></span></div>
+    <div class="col"><a id="csvExport" class="button small">Download CSV</a></div>
 </div>
+
 
 <table id="report" class="boarded">
   <thead>
@@ -25,3 +27,6 @@
     <% end %>
   </tbody>
 </table>
+<pre id="csvData" style="display:none">
+<%= csv_data %>
+</pre>
