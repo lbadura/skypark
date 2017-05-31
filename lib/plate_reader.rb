@@ -1,6 +1,8 @@
 require 'google_drive'
 
 class PlateReader
+  UNKNOWN = 'unknown'
+
   def initialize
     @session = GoogleDrive::Session.from_service_account_key(Skypark::GOOGLE_CREDENTIALS_FILE)
   end
@@ -11,7 +13,8 @@ class PlateReader
 
   def owner(plate)
     sanitized_plate = plate.gsub(" ", "").upcase
-    plates.find {|_, license_plates| license_plates.include?(sanitized_plate)}&.first
+    owner = plates.find {|_, license_plates| license_plates.include?(sanitized_plate)}&.first
+    owner || UNKNOWN
   end
 
   private

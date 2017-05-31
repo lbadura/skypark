@@ -1,6 +1,8 @@
 require_relative '../test_helper'
 require_relative '../../lib/parking_report'
 require_relative '../../lib/parking_record'
+require_relative '../../lib/license_record'
+require_relative '../../lib/plate_reader'
 
 class ParkingReportTest < Minitest::Test
   def setup
@@ -12,59 +14,66 @@ class ParkingReportTest < Minitest::Test
       ParkingRecord.new("CCC789",nil,nil,1),
       ParkingRecord.new("DDD000",nil,nil,1),
     ]
+
+    license_records = [
+      LicenseRecord.new(Date.new(2017,5,1), "AAA123", nil, nil, 5.0),
+      LicenseRecord.new(Date.new(2017,5,1), "BBB456", nil, nil, 5.0),
+      LicenseRecord.new(Date.new(2017,5,1), "CCC789", nil, nil, 5.0),
+    ]
+
     plate_reader = mock()
-    plate_reader.expects(:owner).times(3).with("AAA123").returns("John")
-    plate_reader.expects(:owner).with("BBB456").returns(ParkingReport::UNKNOWN)
-    plate_reader.expects(:owner).with("CCC789").returns("Ian")
-    plate_reader.expects(:owner).with("DDD000").returns("Ian")
-    @report = ParkingReport.new(parking_records, plate_reader)
+    plate_reader.stubs(:owner).at_least_once.with("AAA123").returns("John")
+    plate_reader.expects(:owner).at_least_once.with("BBB456").returns(PlateReader::UNKNOWN)
+    plate_reader.expects(:owner).at_least_once.with("CCC789").returns("Ian")
+    plate_reader.expects(:owner).at_least_once.with("DDD000").returns("Ian")
+    @report = ParkingReport.new(license_records, parking_records, plate_reader: plate_reader)
     @result = @report.call
   end
 
   def test_report
-    # should aggregate all plate expenses
-    assert_equal(@result["John"]["AAA123"], [ParkingReport::INITIAL_FEE, 12.10, 7.90, 0.0])
-    # should sum total amount + initial fee
-    assert_equal(@result["John"]["total"], (ParkingReport::INITIAL_FEE + 12.10 + 7.90 + 0.0))
+    john = @result.find {|r| r.owner == "John"}
+    ian = @result.find {|r| r.owner == "Ian"}
+    unknown = @result.find {|r| r.owner == PlateReader::UNKNOWN}
+    assert_equal(john.usage.size, 4)
+    # should sum total amount
+    assert_equal(john.total, 26.15)
     # non matching owners aggregates as unknown
-    assert_equal(@result[ParkingReport::UNKNOWN]["total"], ParkingReport::INITIAL_FEE + 0.59)
+    assert_equal(6.74, unknown.total)
     # assigns multiple plates to the same owner
-    assert_equal(@result["Ian"]["total"], (ParkingReport::INITIAL_FEE * 2) + 1 + 1)
-    assert(@result["Ian"].include?("CCC789"))
-    assert(@result["Ian"].include?("DDD000"))
+    assert_equal(8.15, ian.total)
   end
 
   def test_users
-    assert(@report.users.include?(ParkingReport::UNKNOWN))
+    assert(@report.users.include?(PlateReader::UNKNOWN))
     assert(@report.users.include?("John"))
     assert(@report.users.include?("Ian"))
     assert_equal(@report.users.size, 3)
   end
 
-  def test_cars
-    assert(@report.cars.include?("AAA123"))
-    assert(@report.cars.include?("BBB456"))
-    assert(@report.cars.include?("CCC789"))
-    assert(@report.cars.include?("DDD000"))
-    assert_equal(@report.cars.size, 4)
+  def test_license_plates
+    assert(@report.license_plates.include?("AAA123"))
+    assert(@report.license_plates.include?("BBB456"))
+    assert(@report.license_plates.include?("CCC789"))
+    assert(@report.license_plates.include?("DDD000"))
+    assert_equal(@report.license_plates.size, 4)
   end
 
-  def test_unknown_cars
-    assert(@report.unknown_cars.include?("BBB456"))
-    assert_equal(@report.unknown_cars.size, 1)
+  def test_unknown_license_plates
+    assert(@report.unknown_license_plates.include?("BBB456"))
+    assert_equal(1, @report.unknown_license_plates.size)
   end
 
   def test_total
-    assert_equal(@report.total, 47.19)
+    assert_equal(41.04, @report.total)
   end
 
   def test_csv
     csv_data = CSV.parse(@report.to_csv, headers: true)
-    assert_equal(csv_data[0]["Name"], "John")
-    assert_equal(csv_data[0]["Amount"], (ParkingReport::INITIAL_FEE + 12.1 + 7.9).to_s)
-    assert_equal(csv_data[1]["Name"], ParkingReport::UNKNOWN.to_s)
-    assert_equal(csv_data[1]["Amount"], (ParkingReport::INITIAL_FEE + 0.59).to_s)
-    assert_equal(csv_data[2]["Name"], "Ian")
-    assert_equal(csv_data[2]["Amount"], ((ParkingReport::INITIAL_FEE * 2) + 1 + 1).to_s)
+    assert_equal("John", csv_data[0]["Name"])
+    assert_equal("26.15", csv_data[0]["Amount"])
+    assert_equal(PlateReader::UNKNOWN, csv_data[1]["Name"])
+    assert_equal("6.74", csv_data[1]["Amount"])
+    assert_equal("Ian", csv_data[2]["Name"])
+    assert_equal("8.15", csv_data[2]["Amount"])
   end
 end

@@ -11,7 +11,7 @@ class ParkingReportParser
   def call
     csv_data.map do |row|
       record = ParkingRecord.new
-      record.plate = row[1]&.upcase
+      record.license_plate = row[1]&.upcase
       record.start_time = DateTime.parse(row[4])
       record.end_time = DateTime.parse(row[5])
       record.amount = row[6].gsub(",",".").to_f

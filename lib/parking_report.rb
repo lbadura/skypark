@@ -1,57 +1,69 @@
 require 'csv'
+require_relative 'parking_report_row'
 
 class ParkingReport
-  INITIAL_FEE = 6.15
-  UNKNOWN = 'unknown'
-
-  def initialize(parking_records, plate_reader)
+  def initialize(license_records, parking_records, options = {})
+    @license_records = license_records
     @parking_records = parking_records
-    @plate_reader = plate_reader
+    @plate_reader = options[:plate_reader]
     @data = nil
   end
 
   def call
-    return @data if @data
-    res = {}
-    @parking_records.each do |pr|
-      owner = @plate_reader.owner(pr.plate)
-      owner_name = owner || UNKNOWN
-      res[owner_name] = {"total" => 0.0} unless res[owner_name]
-      unless res[owner_name][pr.plate]
-        res[owner_name][pr.plate] = [INITIAL_FEE]
-        res[owner_name]["total"] += INITIAL_FEE
-      end
-      res[owner_name][pr.plate] << pr.amount
-      res[owner_name]["total"] += pr.amount
+    data
+  end
+
+  def row(owner_name)
+    data_row = @data.find {|d| d.owner == owner_name}
+    unless data_row
+      data_row = ParkingReportRow.new(owner_name)
+      @data << data_row
     end
-    @data = res
+    data_row
   end
 
   def to_csv
-    data = call
     CSV.generate(col_sep: ",", row_sep: "\n") do |csv|
       csv << ["Name", "Amount"]
-      data.each do |record|
-        csv << [record[0], record[1]["total"].round(2)]
+      @data.each do |row|
+        csv << [row.owner, row.total]
       end
     end
   end
 
   def total
-    @data.map {|_,v| v["total"]}.sum.round(2)
+    @data.map {|r| r.total}.sum.round(2)
   end
 
   def users
-    @data.map {|k,_| k}
+    @data.map {|r| r.owner}
   end
 
-  def cars
-    @data.map {|_, plate| plate.keys.reject {|k| k == "total"}}.flatten.uniq
+  def license_plates
+    @data.map {|r| r.usage.map(&:license_plate)}.flatten.compact.uniq
   end
 
-  def unknown_cars
-    @data.select {|owner, _| owner == UNKNOWN }.map do |_, plate|
-      plate.keys.reject {|k| k == "total"}
-    end.flatten.uniq
+  def unknown_license_plates
+    records = @data.select {|r| r.owner == PlateReader::UNKNOWN }.map(&:usage).flatten
+    records.map(&:license_plate).uniq
+  end
+
+  def plate_reader
+    @plate_reader ||= PlateReader.new
+  end
+
+  private
+  def data
+    return @data if @data
+    @data = []
+    @parking_records.each do |pr|
+      owner_name = plate_reader.owner(pr.license_plate)
+      row(owner_name).add_record(pr)
+    end
+    @license_records.each do |lr|
+      owner_name = plate_reader.owner(lr.license_plate)
+      row(owner_name).add_record(lr)
+    end
+    @data
   end
 end

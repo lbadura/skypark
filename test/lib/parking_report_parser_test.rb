@@ -8,14 +8,14 @@ class ParkingReportParserTest < Minitest::Test
   end
 
   def test_data_size
-    assert_equal(@parser.call.size, 7)
+    assert_equal(@parser.call.size, 2)
   end
 
   def test_upcased_plates
-    assert_equal(@parser.call.first[:plate], "SR28783")
+    assert_equal(@parser.call.first.license_plate, "KR116RC")
   end
 
   def test_float_amounts
-    assert_equal(@parser.call.first[:amount], 13.9)
+    assert_equal(@parser.call.first.amount, 18.18)
   end
 end

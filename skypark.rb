@@ -11,10 +11,11 @@ get '/' do
 end
 
 post '/report' do
-  file = params["report"]["tempfile"]
-  parking_records = ParkingReportParser.new(file).call
-  plate_reader = PlateReader.new
-  report = ParkingReport.new(parking_records, plate_reader)
+  parking_report_file = params["parking_report"]["tempfile"]
+  license_report_file = params["license_report"]["tempfile"]
+  parking_records = ParkingReportParser.new(parking_report_file).call
+  license_records = LicenseReportParser.new(license_report_file).call
+  report = ParkingReport.new(license_records, parking_records)
   report_data = report.call.sort {|a,b| a[0].downcase <=> b[0].downcase}
   locals = {
     :report_data => report_data,
