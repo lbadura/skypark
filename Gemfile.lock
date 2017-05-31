@@ -1,8 +1,10 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    Ascii85 (1.0.2)
     addressable (2.5.1)
       public_suffix (~> 2.0, >= 2.0.2)
+    afm (0.2.2)
     coderay (1.1.0)
     declarative (0.0.9)
     declarative-option (0.1.0)
@@ -28,6 +30,7 @@ GEM
       multi_json (~> 1.11)
       os (~> 0.9)
       signet (~> 0.7)
+    hashery (2.1.2)
     httpclient (2.8.3)
     jwt (1.5.6)
     little-plugger (1.1.4)
@@ -50,6 +53,12 @@ GEM
     nokogiri (1.7.2)
       mini_portile2 (~> 2.1.0)
     os (0.9.6)
+    pdf-reader (2.0.0)
+      Ascii85 (~> 1.0.0)
+      afm (~> 0.2.1)
+      hashery (~> 2.0)
+      ruby-rc4
+      ttfunk
     pry (0.10.1)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -59,11 +68,13 @@ GEM
     rack (2.0.3)
     rack-protection (2.0.0)
       rack
+    rake (12.0.0)
     representable (3.0.4)
       declarative (< 0.1.0)
       declarative-option (< 0.2.0)
       uber (< 0.2.0)
     retriable (3.0.2)
+    ruby-rc4 (0.1.5)
     signet (0.7.3)
       addressable (~> 2.3)
       faraday (~> 0.9)
@@ -76,6 +87,7 @@ GEM
       tilt (~> 2.0)
     slop (3.6.0)
     tilt (2.0.7)
+    ttfunk (1.5.1)
     uber (0.1.0)
 
 PLATFORMS
@@ -86,8 +98,10 @@ DEPENDENCIES
   google_drive
   minitest
   mocha
+  pdf-reader
   pry
   puma
+  rake
   sinatra (~> 2.0.0)
 
 BUNDLED WITH
