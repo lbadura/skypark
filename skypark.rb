@@ -16,14 +16,13 @@ post '/report' do
   parking_records = ParkingReportParser.new(parking_report_file).call
   license_records = LicenseReportParser.new(license_report_file).call
   report = ParkingReport.new(license_records, parking_records)
-  report_data = report.call.sort {|a,b| a[0].downcase <=> b[0].downcase}
+  parking_report_rows = report.call.sort {|a,b| a.owner.downcase <=> b.owner.downcase}
   locals = {
-    :report_data => report_data,
-    :license_plates => plate_reader.call,
-    :unknown => ParkingReport::UNKNOWN,
-    :users => report.users.size,
-    :cars => report.cars.size,
-    :unknown_cars => report.unknown_cars.size,
+    :license_plates => PlateReader.new.call,
+    :parking_report_rows => parking_report_rows,
+    :license_plate_count => report.license_plates.count,
+    :unknown_license_plate_count => report.unknown_license_plates.count,
+    :owner_count => report.owners.size,
     :total => report.total,
     :csv_data => report.to_csv,
   }

@@ -1,9 +1,14 @@
 <form method="post" action="/report" class="form" enctype="multipart/form-data">
 	<fieldset>
-    <legend>Parking report</legend>
+    <legend>New parking report</legend>
 	<div class="form-item">
-		<input type="file" name="report" class="w50">
-		<button type="submit">Process</button>
+    <label>Parking time CSV</label>
+		<input type="file" name="parking_report" class="w50">
 	</div>
+	<div class="form-item">
+    <label>License plate PDF</label>
+		<input type="file" name="license_report" class="w50">
+	</div>
+  <button type="submit">Process</button>
 </fieldset>
 </form>

@@ -35,7 +35,7 @@ class ParkingReport
     @data.map {|r| r.total}.sum.round(2)
   end
 
-  def users
+  def owners
     @data.map {|r| r.owner}
   end
 

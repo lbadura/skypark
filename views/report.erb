@@ -1,7 +1,7 @@
 <div class="row gutters auto">
-  <div class="col"><span class="focus tag">Users </span> <span class="label focus outline"><%= users %></span></div>
-  <div class="col"><span class="tag focus">Cars </span><span class="label focus outline"><%= cars %></span></div>
-    <div class="col"><span class="tag error">Unknown <span class="label error outline"><%= unknown_cars %></span></div>
+  <div class="col"><span class="focus tag">Owners </span> <span class="label focus outline"><%= owner_count %></span></div>
+  <div class="col"><span class="tag focus">Cars </span><span class="label focus outline"><%= license_plate_count %></span></div>
+    <div class="col"><span class="tag error">Unknown <span class="label error outline"><%= unknown_license_plate_count %></span></div>
     <div class="col"><span class="tag black">Total</span> <span class="label strong black">PLN <%= total %></span></div>
     <div class="col"><a id="csvExport" class="button small">Download CSV</a></div>
 </div>
@@ -14,15 +14,15 @@
     <th class="w10">User spent</th>
   </thead>
   <tbody>
-    <% report_data.each do |name, pd| %>
-      <tr class="<%= name == unknown ? "unknown" : "" %>">
-        <td><%= name %></td>
+    <% parking_report_rows.each do |row| %>
+      <tr class="<%= row.owner == PlateReader::UNKNOWN ? "unknown" : "" %>">
+        <td><%= row.owner %></td>
         <td>
-          <% pd.reject {|k,_| k == "total"}.each do |plate, records| %>
-            <span class="label success small"><%= plate %></span> <span class="tag success small"><%= records.sum.round(2) %></span>
+          <% row.usage.group_by {|u| u.license_plate}.each do |plate, records| %>
+            <span class="label success small"><%= plate %></span> <span class="tag success small"><%= records.map(&:gross_fee).sum.round(2) %></span>
           <% end %>
         </td>
-        <td><span class="strong small">PLN <%= pd["total"].round(2) %></span></td>
+        <td><span class="strong small">PLN <%= row.total.round(2) %></span></td>
       </tr>
     <% end %>
   </tbody>
