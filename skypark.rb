@@ -11,10 +11,10 @@ get '/' do
 end
 
 post '/report' do
-  parking_report_file = params["parking_report"]["tempfile"]
-  license_report_file = params["license_report"]["tempfile"]
-  parking_records = ParkingReportParser.new(parking_report_file).call
-  license_records = LicenseReportParser.new(license_report_file).call
+  parking_report_file = params["parking_report"]["tempfile"] if params["parking_report"]
+  license_report_file = params["license_report"]["tempfile"] if params["license_report"]
+  parking_records = ParkingReportParser.new(parking_report_file).call if parking_report_file
+  license_records = LicenseReportParser.new(license_report_file).call if license_report_file
   report = ParkingReport.new(license_records, parking_records)
   parking_report_rows = report.call.sort {|a,b| a.owner.downcase <=> b.owner.downcase}
   locals = {
