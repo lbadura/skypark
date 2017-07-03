@@ -3,8 +3,8 @@ require_relative 'parking_report_row'
 
 class ParkingReport
   def initialize(license_records, parking_records, options = {})
-    @license_records = license_records
-    @parking_records = parking_records
+    @license_records = license_records || []
+    @parking_records = parking_records || []
     @plate_reader = options[:plate_reader]
     @data = nil
   end

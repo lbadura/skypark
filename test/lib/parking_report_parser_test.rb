@@ -16,6 +16,6 @@ class ParkingReportParserTest < Minitest::Test
   end
 
   def test_float_amounts
-    assert_equal(@parser.call.first.amount, 18.18)
+    assert_equal(@parser.call.first.amount, 5.0)
   end
 end

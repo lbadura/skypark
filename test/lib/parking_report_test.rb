@@ -43,11 +43,11 @@ class ParkingReportTest < Minitest::Test
     assert_equal(8.15, ian.total)
   end
 
-  def test_users
-    assert(@report.users.include?(PlateReader::UNKNOWN))
-    assert(@report.users.include?("John"))
-    assert(@report.users.include?("Ian"))
-    assert_equal(@report.users.size, 3)
+  def test_owners
+    assert(@report.owners.include?(PlateReader::UNKNOWN))
+    assert(@report.owners.include?("John"))
+    assert(@report.owners.include?("Ian"))
+    assert_equal(@report.owners.size, 3)
   end
 
   def test_license_plates
