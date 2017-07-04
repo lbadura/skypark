@@ -1,6 +1,8 @@
+require 'rubygems'
+require 'bundler'
 require 'sinatra'
 require 'omniauth'
-require 'omniauth-google'
+require 'omniauth/google_oauth2'
 require 'dotenv'
 require_relative 'lib/skypark'
 
@@ -13,7 +15,7 @@ enable :sessions
 set :session_secret, 'ip3GvYH3hLAMQ'
 
 use OmniAuth::Builder do
-  provider :google, ENV['GOOGLE_AUTH_CLIENT_ID'], ENV['GOOGLE_AUTH_SECRET_ID'], access_type: 'offline', prompt: 'consent', provider_ignores_state: true, scope: 'email,profile'
+  provider :google_oauth2, ENV['GOOGLE_AUTH_CLIENT_ID'], ENV['GOOGLE_AUTH_SECRET_ID'], access_type: 'offline', prompt: 'consent', provider_ignores_state: true, scope: 'email,profile'
 end
 
 %w(get post).each do |method|
