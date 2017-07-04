@@ -2,4 +2,3 @@
 config/skypark-google.json
 test/fixtures/license_report.pdf
 test/lib/license_report_parser_test.rb
-config/google_oauth.env

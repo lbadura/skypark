@@ -31,6 +31,7 @@ GEM
       os (~> 0.9)
       signet (~> 0.7)
     hashery (2.1.2)
+    hashie (3.5.5)
     httpclient (2.8.3)
     jwt (1.5.6)
     little-plugger (1.1.4)
@@ -52,6 +53,17 @@ GEM
     mustermann (1.0.0)
     nokogiri (1.7.2)
       mini_portile2 (~> 2.1.0)
+    oauth (0.5.3)
+    omniauth (1.6.1)
+      hashie (>= 3.4.6, < 3.6.0)
+      rack (>= 1.6.2, < 3)
+    omniauth-google (1.0.2)
+      multi_json
+      omniauth (~> 1.0)
+      omniauth-oauth
+    omniauth-oauth (1.1.0)
+      oauth
+      omniauth (~> 1.0)
     os (0.9.6)
     pdf-reader (2.0.0)
       Ascii85 (~> 1.0.0)
@@ -98,6 +110,8 @@ DEPENDENCIES
   google_drive
   minitest
   mocha
+  omniauth
+  omniauth-google
   pdf-reader
   pry
   puma
@@ -105,4 +119,4 @@ DEPENDENCIES
   sinatra (~> 2.0.0)
 
 BUNDLED WITH
-   1.15.0
+   1.15.1
