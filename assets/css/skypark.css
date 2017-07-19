@@ -10,3 +10,8 @@ ul.report {
 tr.unknown td {
   background-color: #f9dfdb;
 }
+
+.department_report {
+  margin-top: 50px;
+  margin-bottom: 50px;
+}

@@ -57,6 +57,7 @@ post '/report' do
     :parking_report_rows => parking_report_rows,
     :license_plate_count => report.license_plates.count,
     :unknown_license_plate_count => report.unknown_license_plates.count,
+    :department_report => report.by_department,
     :owner_count => report.owners.size,
     :total => report.total,
     :csv_data => report.to_csv,

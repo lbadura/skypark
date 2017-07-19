@@ -13,20 +13,20 @@ class ParkingReport
     data
   end
 
-  def row(owner_name)
+  def row(owner_name, department)
     data_row = @data.find {|d| d.owner == owner_name}
     unless data_row
-      data_row = ParkingReportRow.new(owner_name)
+      data_row = ParkingReportRow.new(owner_name,department)
       @data << data_row
     end
     data_row
   end
 
   def to_csv
-    CSV.generate(col_sep: ",", row_sep: "\n") do |csv|
-      csv << ["Name", "Amount"]
+    CSV.generate(quote_char: "'", col_sep: ",", row_sep: "\n", converters: :all) do |csv|
+      csv << ["Name", "Departmnet", "Amount"]
       @data.each do |row|
-        csv << [row.owner, row.total]
+        csv << [row.owner, row.department, row.total]
       end
     end
   end
@@ -52,17 +52,29 @@ class ParkingReport
     @plate_reader ||= PlateReader.new
   end
 
+  def by_department
+    groupped = data.group_by(&:department)
+    groupped.map do |group_name, records|
+      OpenStruct.new({
+        :department_name => group_name,
+        :license_costs => records.sum(&:license_costs),
+        :parking_costs => records.sum(&:parking_costs),
+        :total => records.sum(&:total)
+      })
+    end.sort {|a,b| a.department_name <=> b.department_name}
+  end
+
   private
   def data
     return @data if @data
     @data = []
     @parking_records.each do |pr|
-      owner_name = plate_reader.owner(pr.license_plate)
-      row(owner_name).add_record(pr)
+      plate = plate_reader.find_by_plate(pr.license_plate)
+      row(plate.name, plate.department).add_record(pr)
     end
     @license_records.each do |lr|
-      owner_name = plate_reader.owner(lr.license_plate)
-      row(owner_name).add_record(lr)
+      plate = plate_reader.find_by_plate(lr.license_plate)
+      row(plate.name, plate.department).add_record(lr)
     end
     @data
   end

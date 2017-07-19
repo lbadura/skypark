@@ -3,6 +3,8 @@ require 'google_drive'
 class PlateReader
   UNKNOWN = 'unknown'
 
+  class Row < OpenStruct; end
+
   def initialize
     @session = GoogleDrive::Session.from_service_account_key(Skypark::GOOGLE_CREDENTIALS_FILE)
   end
@@ -11,23 +13,28 @@ class PlateReader
     plates
   end
 
-  def owner(plate)
+  def find_by_plate(plate)
     sanitized_plate = plate.gsub(" ", "").upcase
-    owner = plates.find {|_, license_plates| license_plates.include?(sanitized_plate)}&.first
-    owner || UNKNOWN
+    plates.find {|p| p.plate == sanitized_plate} || unknown
+  end
+
+  def unknown
+    Row.new(department: UNKNOWN, name: UNKNOWN)
   end
 
   private
   def plates
     return @plates if @plates
-    plates = {}
+    plates = []
     (2..worksheet.num_rows).each do |row|
       (1..worksheet.num_cols).each do |col|
         name = worksheet[row,1]
         plate = worksheet[row,2].gsub(" ", "").upcase
-        plates[name] = [] unless plates[name]
+        department = worksheet[row,4]
         next if plate&.empty?
-        plates[name] << plate unless plates[name].include?(plate)
+        unless plates.find {|p| p.plate == plate}
+          plates << Row.new(plate: plate, department: department, name: name)
+        end
       end
     end
     @plates = plates unless plates.empty?
