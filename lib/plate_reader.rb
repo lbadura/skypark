@@ -41,6 +41,6 @@ class PlateReader
   end
 
   def worksheet
-    @worksheet ||= @session.spreadsheet_by_key(Skypark::REGISTRY_FILE_KEY).worksheets[0]
+    @worksheet ||= @session.spreadsheet_by_key(Skypark::REGISTRY_FILE_KEY).worksheets.select {|w| w.title == "Licenses"}.first
   end
 end
