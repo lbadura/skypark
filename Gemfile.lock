@@ -51,7 +51,8 @@ GEM
     multi_json (1.12.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
-    mustermann (1.0.0)
+    mustermann (1.1.1)
+      ruby2_keywords (~> 0.0.1)
     nokogiri (1.7.2)
       mini_portile2 (~> 2.1.0)
     oauth2 (1.4.0)
@@ -84,8 +85,8 @@ GEM
       slop (~> 3.4)
     public_suffix (2.0.5)
     puma (3.7.0)
-    rack (2.0.3)
-    rack-protection (2.0.0)
+    rack (2.2.3)
+    rack-protection (2.2.0)
       rack
     rake (12.0.0)
     representable (3.0.4)
@@ -94,18 +95,19 @@ GEM
       uber (< 0.2.0)
     retriable (3.0.2)
     ruby-rc4 (0.1.5)
+    ruby2_keywords (0.0.5)
     signet (0.7.3)
       addressable (~> 2.3)
       faraday (~> 0.9)
       jwt (~> 1.5)
       multi_json (~> 1.10)
-    sinatra (2.0.0)
+    sinatra (2.2.0)
       mustermann (~> 1.0)
-      rack (~> 2.0)
-      rack-protection (= 2.0.0)
+      rack (~> 2.2)
+      rack-protection (= 2.2.0)
       tilt (~> 2.0)
     slop (3.6.0)
-    tilt (2.0.7)
+    tilt (2.0.10)
     ttfunk (1.5.1)
     uber (0.1.0)
 
@@ -123,7 +125,7 @@ DEPENDENCIES
   pry
   puma
   rake
-  sinatra (~> 2.0.0)
+  sinatra (~> 2.2.0)
 
 BUNDLED WITH
    1.15.1
